@@ -6,12 +6,14 @@
         <span>{{leftSelection.length}}/{{leftTableData.length}}</span>
       </p>
       <div v-if="showQuery">
-        <el-form :inline="true" :model="leftQueryCondition" class="query-form">
-          <slot name="leftCondition" v-bind:scope="leftQueryCondition"></slot>
-          <el-form-item>
-            <el-button type="primary" size="small" icon="el-icon-search" @click="onLeftQuerySubmit()"></el-button>
-          </el-form-item>
-        </el-form>
+        <template>
+            <el-form :inline="true" :model="leftQueryCondition" class="query-form">
+            <slot name="lcondition" v-bind:scope="leftQueryCondition"></slot>
+            <el-form-item>
+                <el-button type="primary" size="small" icon="el-icon-search" @click="onLeftQuerySubmit()">{{queryTexts[0]}}</el-button>
+            </el-form-item>
+            </el-form>
+        </template>
       </div>
       <el-table
           ref="leftTable"
@@ -79,12 +81,13 @@
       </p>
       <div v-if="showQuery">
         <el-form :inline="true" :model="rightQueryCondition" class="query-form">
-          <slot name="rightCondition" v-bind:scope="rightQueryCondition"></slot>
+          <slot name="rcondition" v-bind:scope="rightQueryCondition"></slot>
           <el-form-item>
-            <el-button type="primary" size="small" icon="el-icon-search" @click="onRightQuerySubmit()"></el-button>
+            <el-button type="primary" size="small" icon="el-icon-search" @click="onRightQuerySubmit()">{{queryTexts[1]}}</el-button>
           </el-form-item>
         </el-form>
       </div>
+
       <el-table
           ref="rightTable"
           size="small"
@@ -92,7 +95,6 @@
           :height="minHeight"
           :data="calcRightTableData"
           :row-key="tableRowKey"
-          @row-click="handleRightRowClick"
           @selection-change="handleRightSelectionChange"
           border
           stripe>
@@ -105,19 +107,33 @@
                 :width="col.width"
                 v-if="col.type === 'col'">
                 </el-table-column>
-             <el-table-column :prop="col.id"
+                
+            <el-table-column 
+                :prop="col.id"
                 :key="col.id"
                 :label="col.label"
                 :width="col.width"
-                v-if="col.type === 'button'">
+                v-if="col.type === 'input'">
+                  <template slot-scope="scope">
+                     <!-- 这个 el-input 是编辑用的，通过 v-if="edit" ，edit 为 true 显示 el-input 元素 -->
+                     <el-input size="small" v-model="rightTableData[scope.$index][col.id]"></el-input>
+                  </template>
+            </el-table-column>
 
-                                        <template >
-                                                <el-input-number 
-                                                 :min="1" size="mini"></el-input-number>
-                                        </template>
+            <el-table-column 
+                :prop="col.id"
+                :key="col.id"
+                :label="col.label"
+                :width="col.width"
+                v-if="col.type === 'order'">
+                    <template slot-scope="scope">
+                        <!-- 这个 el-input 是编辑用的，通过 v-if="edit" ，edit 为 true 显示 el-input 元素 -->
+                        <el-input-number size="small" :min=1 v-model="rightTableData[scope.$index][col.id]"></el-input-number>
+                    </template>
             </el-table-column>
         </template>
       </el-table>
+
       <el-pagination
           v-if="showPagination"
           :total="rightTableData.length"
@@ -323,7 +339,7 @@
           const condition = {
             pageIndex: this.pageIndex,
             pageSize: this.pageSize,
-            ...this.leftQueryCondition
+            ...this.rightQueryCondition
           }
           this.rightDataCallBack.call(null, condition).then(result => {
             if (result && Array.isArray(result.data)) {
@@ -371,7 +387,9 @@
         this.handlePaginationCallBack();
       },
       onRightQuerySubmit() {
-        this.rightConditionTemp = JSON.parse(JSON.stringify(this.rightQueryCondition));
+        // TODO
+        // this.rightConditionTemp = JSON.parse(JSON.stringify(this.rightQueryCondition));
+        this.handleRightDataCallBack();
       },
       checkObjectIsEqual(rowObj1, rowObj2) {
         return this.tableRowKey(rowObj1) === this.tableRowKey(rowObj2)
@@ -388,7 +406,8 @@
         this.pageIndex = 1;
         // this.handlePaginationCallBack();
       },
-      reload(){
+
+      etlTransferCreated(){
         this.handlePaginationCallBack()
         this.handleRightDataCallBack()
       }

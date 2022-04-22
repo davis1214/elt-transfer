@@ -2,7 +2,7 @@
   <div id="app">
     <elt-transfer
         ref="eltTransfer"
-        :show-query="false"
+        :show-query="true"
         :show-pagination="true"
         :pagination-call-back="paginationCallBack"
         :right-data-call-back="rightDataCallBack"
@@ -21,15 +21,17 @@
           <span v-else>{{scope.row[scope.col.id]}}</span>
         </div>
       </template>
-      <template v-slot:leftCondition="{scope}">
-        <el-form-item label="姓名_test">
+      <template v-slot:lcondition="{scope}">
+        <el-form-item label="姓名11">
           <el-input v-model="scope.name" size="small" placeholder="姓名"></el-input>
         </el-form-item>
+        <!--
         <el-form-item label="年龄">
           <el-input v-model="scope.age" size="small" placeholder="年龄"></el-input>
         </el-form-item>
+        -->
       </template>
-      <template v-slot:rightCondition="{scope}">
+      <template v-slot:rcondition="{scope}">
         <el-form-item label="名称">
           <el-input v-model="scope.name" size="small" placeholder="名称"></el-input>
         </el-form-item>
@@ -39,6 +41,8 @@
       v-Model : {{tableData.length}}
     </div>
     <el-button @click="clearTransfer()">清空</el-button>
+
+    <el-button @click="submit()">提交</el-button>
   </div>
 </template>
 
@@ -58,14 +62,15 @@
         tableData: [],
 
         leftColumns: [
-          {label: '姓名', id: 'name', width: '120px'},
-          {label: '性别', id: 'gender', width: '120px'},
-          {label: '年龄', id: 'age',}
+          {label: '姓名', id: 'name', width: '120px', type: 'col'},
+          {label: '性别', id: 'gender', width: '120px', type:'button'},
+        //   {label: '年龄', id: 'age', width: '120px', type:'order'}
         ],
 
         rightColumns: [
           {label: '姓名1', id: 'name', width: '120px', type: 'col' },
-          {label: '性别1111', id: 'gender', width: '120px' , type:'button' },
+          {label: '性别1111', id: 'gender', width: '120px' , type:'col' },
+          {label: '年龄', id: 'age',width: '160px' , type:'order'}
         ],
 
         data1: [
@@ -163,10 +168,19 @@
         //  ];
 
         // console.log("tableData",tableData,"value",this.$refs.value);
-        // // console.log(obj)
+        console.log("left search",obj)
         // this.$refs.value = tableData;
 
-        let d = this.data1.filter((item, index) => {
+        let d = this.data1.filter((item,index)=>{
+            if(!obj.name || obj.name.trim().length === 0){
+                return true;
+            }
+
+            if(item.name.indexOf(obj.name)>=0){
+                return true;
+            }
+            return false;
+        }).filter((item, index) => {
           if (index >= (obj.pageIndex - 1) * obj.pageSize && index < obj.pageIndex * obj.pageSize) {
             return true;
           }
@@ -184,18 +198,31 @@
 
      rightDataCallBack(obj) {
         const rightData = [
-          {name: '佘寄南', gender: '女', age: 15},
-          {name: '聊夏云', gender: '女', age: 15}
+          {name: '佘寄南', gender: '女', age: 10},
+          {name: '聊夏云', gender: '女', age: 20}
          ];
 
-        // console.log("tableData",tableData,"value",this.$refs.value);
-        console.log('.......rightDataCallBack......',obj);
+        // console.log('rightDataCallBack',obj);
 
-        // this.$refs.value = tableData;
+        let data = rightData.filter((item,index)=>{
+            if(!obj.name || obj.name.trim().length === 0){
+                return true;
+            }
+
+            if(item.name.indexOf(obj.name)>=0){
+                return true;
+            }
+            return false;
+        }).filter((item, index) => {
+          if (index >= (obj.pageIndex - 1) * obj.pageSize && index < obj.pageIndex * obj.pageSize) {
+            return true;
+          }
+          return false;
+        });
 
         return new Promise(((resolve, reject) => {
           try {
-            resolve({data: rightData })
+            resolve({data: data })
           } catch {
             reject()
           }
@@ -204,7 +231,20 @@
 
       clearTransfer() {
         this.$refs.eltTransfer.clear()
-      }
+      },
+
+
+     submit(){
+            // etlTransfer
+            const leftSelection = this.$refs.eltTransfer.leftSelection;
+            const leftTableData = this.$refs.eltTransfer.leftTableData;
+            const rightSelection = this.$refs.eltTransfer.rightSelection;
+            const rightTableData = this.$refs.eltTransfer.rightTableData;
+            console.log("leftSelection", leftSelection, "leftTableData", leftTableData);
+            console.log("rightSelection", rightSelection, "rightTableData", rightTableData);
+
+     }
+
     }
   }
 </script>
