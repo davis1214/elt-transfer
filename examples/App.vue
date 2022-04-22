@@ -2,12 +2,14 @@
   <div id="app">
     <elt-transfer
         ref="eltTransfer"
-        :show-query="true"
+        :show-query="false"
         :show-pagination="true"
         :pagination-call-back="paginationCallBack"
+        :right-data-call-back="rightDataCallBack"
         :left-columns="leftColumns"
+        :right-columns="rightColumns"
         :title-texts="['待选','已选']"
-        :button-texts="['添加','删除']"
+        :button-texts="['添加','移除']"
         :query-texts="['筛选','筛选']"
         :table-row-key="row => row.name"
         v-model="tableData"
@@ -20,16 +22,16 @@
         </div>
       </template>
       <template v-slot:leftCondition="{scope}">
-        <el-form-item label="姓名">
-          <el-input v-model="scope.name" placeholder="姓名"></el-input>
+        <el-form-item label="姓名_test">
+          <el-input v-model="scope.name" size="small" placeholder="姓名"></el-input>
         </el-form-item>
         <el-form-item label="年龄">
-          <el-input v-model="scope.age" placeholder="年龄"></el-input>
+          <el-input v-model="scope.age" size="small" placeholder="年龄"></el-input>
         </el-form-item>
       </template>
       <template v-slot:rightCondition="{scope}">
         <el-form-item label="名称">
-          <el-input v-model="scope.name" placeholder="名称"></el-input>
+          <el-input v-model="scope.name" size="small" placeholder="名称"></el-input>
         </el-form-item>
       </template>
     </elt-transfer>
@@ -48,14 +50,22 @@
     name: 'app',
     data() {
       return {
-        tableData: [
-          {name: '方琼岚', gender: '女', age: 15},
-          {name: '焉彦珺', gender: '女', age: 15}
-        ],
+
+        // tableData: [
+        //   {name: '方琼岚', gender: '女', age: 15},
+        //   {name: '焉彦珺', gender: '女', age: 15}
+        // ],
+        tableData: [],
+
         leftColumns: [
           {label: '姓名', id: 'name', width: '120px'},
           {label: '性别', id: 'gender', width: '120px'},
           {label: '年龄', id: 'age',}
+        ],
+
+        rightColumns: [
+          {label: '姓名1', id: 'name', width: '120px', type: 'col' },
+          {label: '性别1111', id: 'gender', width: '120px' , type:'button' },
         ],
 
         data1: [
@@ -147,21 +157,51 @@
     },
     methods: {
       paginationCallBack(obj) {
-        // console.log(obj)
+        // const tableData = [
+        //   {name: '佘寄南', gender: '女', age: 15},
+        //   {name: '聊夏云', gender: '女', age: 15}
+        //  ];
+
+        // console.log("tableData",tableData,"value",this.$refs.value);
+        // // console.log(obj)
+        // this.$refs.value = tableData;
+
         let d = this.data1.filter((item, index) => {
           if (index >= (obj.pageIndex - 1) * obj.pageSize && index < obj.pageIndex * obj.pageSize) {
             return true;
           }
           return false;
         });
+
         return new Promise(((resolve, reject) => {
           try {
-            resolve({total: this.data1.length, data: d})
+            resolve({total: this.data1.length, data: d })
           } catch {
             reject()
           }
         }))
       },
+
+     rightDataCallBack(obj) {
+        const rightData = [
+          {name: '佘寄南', gender: '女', age: 15},
+          {name: '聊夏云', gender: '女', age: 15}
+         ];
+
+        // console.log("tableData",tableData,"value",this.$refs.value);
+        console.log('.......rightDataCallBack......',obj);
+
+        // this.$refs.value = tableData;
+
+        return new Promise(((resolve, reject) => {
+          try {
+            resolve({data: rightData })
+          } catch {
+            reject()
+          }
+        }))
+      },
+
       clearTransfer() {
         this.$refs.eltTransfer.clear()
       }

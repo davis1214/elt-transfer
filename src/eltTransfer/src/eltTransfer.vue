@@ -9,7 +9,7 @@
         <el-form :inline="true" :model="leftQueryCondition" class="query-form">
           <slot name="leftCondition" v-bind:scope="leftQueryCondition"></slot>
           <el-form-item>
-            <el-button type="primary" @click="onLeftQuerySubmit()">{{queryTexts[0]}}</el-button>
+            <el-button type="primary" size="small" icon="el-icon-search" @click="onLeftQuerySubmit()"></el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -81,7 +81,7 @@
         <el-form :inline="true" :model="rightQueryCondition" class="query-form">
           <slot name="rightCondition" v-bind:scope="rightQueryCondition"></slot>
           <el-form-item>
-            <el-button type="primary" @click="onRightQuerySubmit()">{{queryTexts[1]}}</el-button>
+            <el-button type="primary" size="small" icon="el-icon-search" @click="onRightQuerySubmit()"></el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -97,18 +97,26 @@
           border
           stripe>
         <el-table-column width="40px" type="selection"></el-table-column>
-        <el-table-column
-            v-for="col in rightColumns || leftColumns"
-            :prop="col.id"
-            :key="col.id"
-            :label="col.label"
-            :width="col.width">
-          <template slot-scope="scope">
-            <slot v-bind:scope="{row: scope.row, col: col}">
-              <span>{{scope.row[col.id]}}</span>
-            </slot>
-          </template>
-        </el-table-column>
+
+        <template v-for="col in rightColumns || leftColumns">
+            <el-table-column :prop="col.id"
+                :key="col.id"
+                :label="col.label"
+                :width="col.width"
+                v-if="col.type === 'col'">
+                </el-table-column>
+             <el-table-column :prop="col.id"
+                :key="col.id"
+                :label="col.label"
+                :width="col.width"
+                v-if="col.type === 'button'">
+
+                                        <template >
+                                                <el-input-number 
+                                                 :min="1" size="mini"></el-input-number>
+                                        </template>
+            </el-table-column>
+        </template>
       </el-table>
       <el-pagination
           v-if="showPagination"
@@ -152,6 +160,20 @@
           }))
         }
       },
+
+      rightDataCallBack: {
+        type: Function,
+        default: function () {
+          return new Promise(((resolve, reject) => {
+            try {
+              resolve({data: null})
+            } catch {
+              reject()
+            }
+          }))
+        }
+      },
+
       // 标题文本
       titleTexts: {
         type: Array,
@@ -221,6 +243,7 @@
     },
     created() {
       this.handlePaginationCallBack()
+      this.handleRightDataCallBack()
     },
     computed: {
       hasButtonTexts() {
@@ -294,6 +317,22 @@
           })
         }
       },
+
+      handleRightDataCallBack() {
+        if (this.showPagination && this.rightDataCallBack) {
+          const condition = {
+            pageIndex: this.pageIndex,
+            pageSize: this.pageSize,
+            ...this.leftQueryCondition
+          }
+          this.rightDataCallBack.call(null, condition).then(result => {
+            if (result && Array.isArray(result.data)) {
+              this.rightTableData = result.data
+            }
+          })
+        }
+      },
+
       handleRowStyle({row}) {
         if (this.rightTableData.some(rightRow => this.checkObjectIsEqual(rightRow, row))) {
           return {
@@ -347,7 +386,11 @@
           this.rightQueryCondition[key] = undefined;
         }
         this.pageIndex = 1;
-        this.handlePaginationCallBack();
+        // this.handlePaginationCallBack();
+      },
+      reload(){
+        this.handlePaginationCallBack()
+        this.handleRightDataCallBack()
       }
     }
   }
