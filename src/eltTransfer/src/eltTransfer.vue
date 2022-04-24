@@ -128,7 +128,7 @@
                 v-if="col.type === 'order'">
                     <template slot-scope="scope">
                         <!-- 这个 el-input 是编辑用的，通过 v-if="edit" ，edit 为 true 显示 el-input 元素 -->
-                        <el-input-number size="small" :min=1 v-model="rightTableData[scope.$index][col.id]"></el-input-number>
+                        <el-input-number size="small" :min=1 :max=65535 v-model="rightTableData[scope.$index][col.id]"></el-input-number>
                     </template>
             </el-table-column>
         </template>
@@ -324,12 +324,12 @@
               this.totalSize = result.total
             }
 
-            this.$nextTick(() => {
-              this.leftTableData.forEach(leftRow => {
-                const isHave = this.rightTableData.some(rightRow => this.checkObjectIsEqual(rightRow, leftRow))
-                this.$refs.leftTable.toggleRowSelection(leftRow, isHave)
-              })
-            })
+            // this.$nextTick(() => {
+            //   this.leftTableData.forEach(leftRow => {
+            //     const isHave = this.rightTableData.some(rightRow => this.checkObjectIsEqual(rightRow, leftRow))
+            //     this.$refs.leftTable.toggleRowSelection(leftRow, isHave)
+            //   })
+            // })
           })
         }
       },
@@ -346,11 +346,22 @@
               this.rightTableData = result.data
             }
           })
+
+        //   this.$nextTick(() => {
+        //       this.leftTableData.forEach(leftRow => {
+        //         const isHave = this.rightTableData.some(rightRow => this.checkObjectIsEqual(rightRow, leftRow))
+        //         this.$refs.leftTable.toggleRowSelection(leftRow, isHave)
+        //       })
+        //   })
         }
       },
 
       handleRowStyle({row}) {
         if (this.rightTableData.some(rightRow => this.checkObjectIsEqual(rightRow, row))) {
+            this.leftTableData.filter(leftRow => this.checkObjectIsEqual(row, leftRow)).forEach(leftRow => {
+                this.$refs.leftTable.toggleRowSelection(leftRow, true);
+            })
+
           return {
             color: 'blue'
           }
@@ -387,7 +398,6 @@
         this.handlePaginationCallBack();
       },
       onRightQuerySubmit() {
-        // TODO
         // this.rightConditionTemp = JSON.parse(JSON.stringify(this.rightQueryCondition));
         this.handleRightDataCallBack();
       },
@@ -408,8 +418,17 @@
       },
 
       etlTransferCreated(){
-        this.handlePaginationCallBack()
+        this.rightTableData = [];
+        this.leftTableData = [];
+        this.rightSelection = [];
+        this.leftSelection = [];
+        this.pageIndex = 1;
+
+        this.leftQueryCondition = {};
+        this.rightQueryCondition = {};
+
         this.handleRightDataCallBack()
+        this.handlePaginationCallBack()
       }
     }
   }
