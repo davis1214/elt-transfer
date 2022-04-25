@@ -41,7 +41,6 @@
       v-Model : {{tableData.length}}
     </div>
     <el-button @click="clearTransfer()">清空</el-button>
-
     <el-button @click="submit()">提交</el-button>
   </div>
 </template>
@@ -55,16 +54,12 @@
     data() {
       return {
 
-        // tableData: [
-        //   {name: '方琼岚', gender: '女', age: 15},
-        //   {name: '焉彦珺', gender: '女', age: 15}
-        // ],
         tableData: [],
 
         leftColumns: [
           {label: '姓名', id: 'name', width: '120px', type: 'col'},
           {label: '性别', id: 'gender', width: '120px', type:'button'},
-        //   {label: '年龄', id: 'age', width: '120px', type:'order'}
+          {label: '年龄', id: 'age',width: '160px' , type:'order'}
         ],
 
         rightColumns: [
@@ -162,14 +157,6 @@
     },
     methods: {
       paginationCallBack(obj) {
-        // const tableData = [
-        //   {name: '佘寄南', gender: '女', age: 15},
-        //   {name: '聊夏云', gender: '女', age: 15}
-        //  ];
-
-        // console.log("tableData",tableData,"value",this.$refs.value);
-        console.log("left search",obj)
-        // this.$refs.value = tableData;
 
         let d = this.data1.filter((item,index)=>{
             if(!obj.name || obj.name.trim().length === 0){
@@ -202,8 +189,6 @@
           {name: '聊夏云', gender: '女', age: 20}
          ];
 
-        // console.log('rightDataCallBack',obj);
-
         let data = rightData.filter((item,index)=>{
             if(!obj.name || obj.name.trim().length === 0){
                 return true;
@@ -232,7 +217,6 @@
       clearTransfer() {
         this.$refs.eltTransfer.clear()
       },
-
 
      submit(){
             // etlTransfer

@@ -414,7 +414,6 @@
           this.rightQueryCondition[key] = undefined;
         }
         this.pageIndex = 1;
-        // this.handlePaginationCallBack();
       },
 
       etlTransferCreated(){
