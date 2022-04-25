@@ -9,6 +9,7 @@
 6. 清理数据时，不再再次加载左侧 leftTableData 数据
 7. 支持表单数据提交
 8. 完善example代码
+9. 穿梭框右侧筛选，基于已经已经加载的 rightTableData 进行筛选
 
 
 

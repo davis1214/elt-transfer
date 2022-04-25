@@ -398,8 +398,8 @@
         this.handlePaginationCallBack();
       },
       onRightQuerySubmit() {
-        // this.rightConditionTemp = JSON.parse(JSON.stringify(this.rightQueryCondition));
-        this.handleRightDataCallBack();
+        this.rightConditionTemp = JSON.parse(JSON.stringify(this.rightQueryCondition));
+        // this.handleRightDataCallBack();
       },
       checkObjectIsEqual(rowObj1, rowObj2) {
         return this.tableRowKey(rowObj1) === this.tableRowKey(rowObj2)
