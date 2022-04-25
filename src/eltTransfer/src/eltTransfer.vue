@@ -274,7 +274,10 @@
       calcRightTableData() {
         if (this.showQuery && this.rightConditionTemp) {
           const conditionKeys = Object.keys(this.rightConditionTemp);
-        //   console.log('rightConditionTemp', this.rightConditionTemp, 'conditionKeys', conditionKeys)
+          if(!conditionKeys || conditionKeys.length == 0){
+              return this.rightTableData;
+          }
+
           return this.rightTableData.filter(data => {
             return conditionKeys.some(key => {
               const rowCellData = data[key];
