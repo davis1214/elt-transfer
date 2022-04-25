@@ -11,6 +11,7 @@
 8. 完善example代码
 
 
+
 ## 安装
 `npm install elt-transfer`
 
@@ -59,4 +60,8 @@ Vue.use(eltTransfer)
 | rcondition | 同上 |
 
 
+## RoadMap
+1. 穿梭框左侧分页功能
+2. leftTable、rightTable 可自适应宽度
+3. 扩展部分接口 - 提交
 
