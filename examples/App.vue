@@ -63,8 +63,8 @@
         ],
 
         rightColumns: [
-          {label: '姓名1', id: 'name', width: '120px', type: 'col' },
-          {label: '性别1111', id: 'gender', width: '120px' , type:'col' },
+          {label: '姓名', id: 'name', width: '120px', type: 'col' },
+          {label: '性别', id: 'gender', width: '120px' , type:'col' },
           {label: '年龄', id: 'age',width: '160px' , type:'order'}
         ],
 
