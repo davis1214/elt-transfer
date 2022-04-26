@@ -350,13 +350,6 @@
               this.rightTableData = result.data
             }
           })
-
-        //   this.$nextTick(() => {
-        //       this.leftTableData.forEach(leftRow => {
-        //         const isHave = this.rightTableData.some(rightRow => this.checkObjectIsEqual(rightRow, leftRow))
-        //         this.$refs.leftTable.toggleRowSelection(leftRow, isHave)
-        //       })
-        //   })
         }
       },
 
@@ -402,6 +395,7 @@
         this.handlePaginationCallBack();
       },
       onRightQuerySubmit() {
+        // 仅支持本地搜索
         this.rightConditionTemp = JSON.parse(JSON.stringify(this.rightQueryCondition));
         // this.handleRightDataCallBack();
       },
