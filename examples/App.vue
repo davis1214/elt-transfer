@@ -22,7 +22,7 @@
         </div>
       </template>
       <template v-slot:lcondition="{scope}">
-        <el-form-item label="姓名11">
+        <el-form-item label="姓名">
           <el-input v-model="scope.name" size="small" placeholder="姓名"></el-input>
         </el-form-item>
         <!--
